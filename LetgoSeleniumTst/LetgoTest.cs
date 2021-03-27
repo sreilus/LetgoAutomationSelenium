@@ -5,6 +5,7 @@ using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace LetgoSeleniumTst
 {
@@ -18,37 +19,72 @@ namespace LetgoSeleniumTst
 		}
 		public void StartSeleium()
 		{
-			homeURL = "https://www.letgo.com/tr-tr?passwordlessLogin=kLMW0WY3QjdZ7g%3D%3D.vWhdVXzwlqwCMCaAisMbR2Ee8%2BMbizuNXhoMwcy1TYHpEWoAJ8RmEJcKG0Rir0wXrgn8zPyu6Ga9HM2YzwjYGqJFkDeVBy6E4RjvCnay4JrD4jn1l9C%2FYwy17bOtUNiX77C7bWD6gosIIgyXPm%2Fsz3AfaLqOZyxqdk0WcDcQKw7cGNXDP8LABVv40Fzff1o0WTzDdsHb4DrVPAIve4lRq3uUzl%2BxJWFOzlzHGwBwPQEeMWSesPgf7mxthOKOwiz%2BO3mKk3ZKw3SC9%2Bd2MHPepNHw6RHKMfUmC%2FVmq24EoMfP3mvb6L5XJ%2FrZA9ulI1SRVMei4xOA2Usgi%2BYTEDelkQ%3D%3D.qNJysAAPcwVh3P6dZ2MnSKHLbeKvb4og6Ezuq5Kv8bcjF%2Fgqx9U41IpLUh10yOg8KwPkd%2B7NomnumIM5VKisoUix9oL4gWX77akGg%2BSDldnoqkmlxWOImrP0Gdig1TbhQvX1Q%2Fvlr35W7cKuceoa9kDI7dfxjPc42CMp4MV3UPB6mkmnp19fkd8eIiGnz1%2BJex7tf35Lwu4ndJFBhtYmGLwfUEPDpk8XSxyZ0csViDjBhGbRLWjQiKtIw7czyjeFKMizcoPA0UY6RYu84gIndPiB8xfbjVkKTdNDOYkMtJjBb5bUdc9rwj1v4pPJT%2Bm5fQAtkt31H1ZH4fB%2FiCzuMw%3D%3D&utm_source=email&utm_campaign=passwordless";   
+			homeURL = "emailCode";
+
 			driver.Navigate().GoToUrl(homeURL);
-			WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
-			//wait.Until(driver => driver.FindElement(By.XPath("//button[@data-test ='login']")));
-			//var element = driver.FindElement(By.XPath("//button[@data-test ='login']"));
-			//element.Click();
+			//UploadProducts();
+			DeleteProducts();
 
-			//wait.Until(driver => driver.FindElement(By.XPath("//button[@data-testid ='login-google']")));
-			//element = driver.FindElement(By.XPath("//button[@data-testid ='login-google']"));
-			//element.Click();
-
-			wait.Until(driver => driver.FindElement(By.XPath("//button[@data-test ='sell-your-stuff-button']")));
-			var element = driver.FindElement(By.XPath("//button[@data-test ='sell-your-stuff-button']"));
-			element.Click();
-
-			// Elementin görünür olması beklenir
-			wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//div[@data-test ='sell-your-stuff-button image-upload category-choice-fashion-accessories']")));
-			Thread.Sleep(new TimeSpan(0, 0, 10));
-			Assert.IsTrue(driver.FindElement(By.XPath("//div[@data-test ='sell-your-stuff-button image-upload category-choice-fashion-accessories']")).Displayed);
-			//Elementin tıklanabilir olması beklenir
-			wait.Until(ExpectedConditions.ElementToBeClickable(By.XPath("//div[@data-test ='sell-your-stuff-button image-upload category-choice-fashion-accessories']")));
-			element = driver.FindElement(By.XPath("//div[@data-test ='sell-your-stuff-button image-upload category-choice-fashion-accessories']"));
-			element.Click();
-			//IWebElement element =
-			//	driver.FindElement(By.XPath("//a[@href='/beta/login']"));
 			Console.WriteLine("Hello World!");
 		}
 
-		// login xpath: //*[@id="app"]/main/div[1]/header/div/div/div[4]/button
-		// ButtonBase-sc-1y9qvfw-0 ButtonStyle-sc-15r21gz-0 koGjqV	
-		// ButtonBase-sc-1y9qvfw-0 ButtonStyle-sc-15r21gz-0 koGjqV
-		// data-test = sell-your-stuff-button
+		#region Product Delete
+		public void DeleteProducts()
+		{
+			Thread.Sleep(new TimeSpan(0, 0, 10));
+			driver.FindElement(By.XPath("//div[@data-test ='avatar-header']")).Click();
+			Thread.Sleep(new TimeSpan(0, 0, 5));
+			driver.FindElement(By.XPath("//li[@data-test ='profile-menu-item']"))?.Click();
+			Thread.Sleep(new TimeSpan(0, 0, 10));
+			driver.FindElement(By.XPath("//button[@data-test ='permission_button_close']"))?.Click();
+			for (int i = 0; i < 5; i++)
+			{
+				Thread.Sleep(new TimeSpan(0, 0, 5));
+				driver.FindElement(By.XPath("//button[@data-test ='more-options-button']"))?.Click();
+				Thread.Sleep(new TimeSpan(0, 0, 5));
+				driver.FindElement(By.XPath("//span[@data-test ='delete-item-button']"))?.Click();
+				Thread.Sleep(new TimeSpan(0, 0, 5));
+				driver.FindElement(By.XPath("/html/body/div[3]/div[2]/div/div[2]/div/div[1]/div"))?.Click();
+			}
+		}
+		#endregion
+
+		#region Product Upload
+		public void UploadProducts()
+		{
+			WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+			for (int i = 0; i < 10; i++)
+			{
+				Thread.Sleep(new TimeSpan(0, 0, 5));
+				wait.Until(driver => driver.FindElement(By.XPath("//button[@data-test ='sell-your-stuff-button']")));
+				var element = driver.FindElement(By.XPath("//button[@data-test ='sell-your-stuff-button']"));
+				element.Click();
+
+				// Elementin görünür olması beklenir
+				Thread.Sleep(new TimeSpan(0, 0, 10));
+				//element = driver.FindElement(By.XPath("//div[@data-test ='sell-your-stuff-button image-upload category-choice-fashion-accessories']"));
+				element = driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div/div[2]/div/div/div[6]"));
+				element.Click();
+
+				// send image file
+				string image1Path = @"C:\Users\Muhammet\Pictures\sky.jpg";
+				string image1Path2 = @"C:\Users\Muhammet\Pictures\sky2.jpg";
+				Thread.Sleep(new TimeSpan(0, 0, 5));
+				driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div/div[2]/div[2]/div/input")).SendKeys(image1Path);
+				Thread.Sleep(new TimeSpan(0, 0, 5));
+				driver.FindElement(By.XPath("/html/body/div[2]/div[2]/div/div[2]/div[1]/div[1]/div[1]/div[4]/div/input")).SendKeys(image1Path2);
+
+				Thread.Sleep(new TimeSpan(0, 0, 5));
+				driver.FindElement(By.XPath("//input[@data-testid ='price']")).SendKeys($"{270 + (i * 10)}");
+				driver.FindElement(By.XPath("//input[@data-test ='listing-title-field']")).SendKeys($"Product Title {i}");
+				Thread.Sleep(new TimeSpan(0, 0, 2));
+				driver.FindElement(By.XPath("//button[@data-test ='confirm-sell-button']")).Click();
+
+				Thread.Sleep(new TimeSpan(0, 0, 5));
+				driver.FindElement(By.XPath("//button[@data-test ='close-posting-drawer']")).Click();
+			}
+		}
+		#endregion
+
 	}
 }
